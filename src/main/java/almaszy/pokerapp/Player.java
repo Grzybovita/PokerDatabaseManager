@@ -1,10 +1,8 @@
 package almaszy.pokerapp;
 
-import com.sun.istack.NotNull;
-
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "player")
@@ -13,19 +11,30 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @NotNull
-    private String name;
-    @NotNull
-    private String lastname;
-    private String nick;
-    private String telnumber;
-    private String email;
-    private String address;
-    private String city;
-    private String postalcode;
 
-    @ManyToMany(mappedBy = "playersInTournament")
-    Set<Tournament> tournaments;
+    @NotNull(message = "name cannot be null!")
+    private String name;
+
+    @NotNull(message = "last name cannot be null!")
+    private String lastname;
+
+    @NotNull(message = "nick cannot be null!")
+    private String nick;
+
+    @Digits(integer = 9, fraction = 0, message = "Wrong phone number format!")
+    private String telnumber;
+
+    @Email
+    @Pattern(regexp=".+@.+\\..+", message = "Wrong email address format!")
+    private String email;
+
+    private String address;
+
+    @Pattern(regexp="[ a-zA-Z]+", message = "Wrong city format!")
+    private String city;
+
+    @Pattern(regexp="[0-9]{2}-[0-9]{3}", message = "Wrong postalcode format!")
+    private String postalcode;
 
     public Integer getId() {
         return id;
@@ -97,14 +106,6 @@ public class Player {
 
     public void setPostalcode(String postalcode) {
         this.postalcode = postalcode;
-    }
-
-    public Set<Tournament> getTournaments() {
-        return tournaments;
-    }
-
-    public void setTournaments(Set<Tournament> tournaments) {
-        this.tournaments = tournaments;
     }
 
     @Override

@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 
 @Transactional
 @Service("tournamentService")
-public class TournamentServiceImpl implements TournamentService{
+public class TournamentServiceImpl implements TournamentService {
 
     @Autowired
     private TournamentRepository tournamentRepository;

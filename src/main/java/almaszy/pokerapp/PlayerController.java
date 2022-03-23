@@ -1,31 +1,30 @@
 package almaszy.pokerapp;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 
-@Controller
+@RestController
+@Validated
 @RequestMapping(path="/player")
 public class PlayerController {
+
     @Autowired
     private PlayerRepository playerRepository;
 
     @Autowired
     PlayerService playerService;
 
-    @PostMapping(path="/add")
-    public @ResponseBody String addNewPlayer (String name, String lastname, String nick, String telnumber,
-                                              String email, String address, String city, String postalcode) {
-        Player p = new Player();
-        p.setName(name);
-        p.setLastname(lastname);
-        p.setNick(nick);
-        p.setTelnumber(telnumber);
-        p.setEmail(email);
-        p.setAddress(address);
-        p.setCity(city);
-        p.setPostalcode(postalcode);
-        playerRepository.save(p);
+    @PostMapping (path="/add")
+    public String addNewPlayer (
+            @Valid
+            @RequestBody Player player, BindingResult result) {
+        if (result.hasErrors()) {
+            return "error";
+        }
+        playerRepository.save(player);
         return "Saved!";
     }
 
@@ -35,10 +34,14 @@ public class PlayerController {
         return playerRepository.findAll();
     }
 
+
     @GetMapping(path="/delete/{id}")
     public @ResponseBody String deletePlayerById (@PathVariable("id") int id) {
-        playerService.delete(id);
-        return "Player with id " + id + "deleted!";
+        if (playerRepository.findById(id).isPresent()) {
+            playerService.delete(id);
+            return "Player with id " + id + " deleted!";
+        }
+        else return "No player with id " + id + " in database!";
     }
 
 }

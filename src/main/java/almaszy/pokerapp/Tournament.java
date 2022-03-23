@@ -1,6 +1,8 @@
 package almaszy.pokerapp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,12 +13,26 @@ public class Tournament {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    @NotNull(message = "name cannot be null!")
     private String name;
+
+    @NotNull(message = "date cannot be null!")
     private String date;
+
+    @NotNull(message = "buyin cannot be null!")
+    @Digits(integer = 5, fraction = 0, message = "wrong buyin format!")
     private Integer buyin;
+
+    @Digits(integer = 7, fraction = 0, message = "wrong stack format!")
     private Integer stack;
+
+    @Digits(integer = 4, fraction = 0, message = "wrong blinds time format!")
     private Integer blinds;
+
+    @Digits(integer = 8, fraction = 0, message = "wrong guaranteed prize format!")
     private Integer guaranteed;
+
     @ManyToMany
     @JoinTable(
             name="tournament_player",
