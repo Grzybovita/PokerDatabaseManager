@@ -1,6 +1,8 @@
 package almaszy.pokerapp;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface TournamentRepository extends CrudRepository<Tournament, Integer> {
+@Repository
+public interface TournamentRepository extends JpaRepository<Tournament, Integer> {
 }

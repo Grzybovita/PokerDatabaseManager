@@ -31,6 +31,17 @@ public class TournamentController {
         return "Saved!";
     }
 
+    @GetMapping (path="/find/{id}")
+    public @ResponseBody Tournament getTournamentById (@PathVariable("id") int id) {
+        if (tournamentRepository.findById(id).isPresent()) {
+            System.out.println(tournamentRepository.findById(id).get());
+            return tournamentRepository.findById(id).get();
+        }
+        else
+            System.out.println("Tournament not found!");
+        return null;
+    }
+
     @GetMapping(path="/all")
     public @ResponseBody Iterable<Tournament> getAllTournaments() {
         // This returns a JSON or XML with the users
