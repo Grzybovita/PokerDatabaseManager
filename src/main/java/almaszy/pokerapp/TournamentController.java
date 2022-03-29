@@ -32,14 +32,13 @@ public class TournamentController {
     }
 
     @GetMapping (path="/find/{id}")
-    public @ResponseBody Tournament getTournamentById (@PathVariable("id") int id) {
+    public @ResponseBody Tournament getTournamentById (@PathVariable("id") int id) throws PlayerNotFoundException {
         if (tournamentRepository.findById(id).isPresent()) {
             System.out.println(tournamentRepository.findById(id).get());
             return tournamentRepository.findById(id).get();
         }
         else
-            System.out.println("Tournament not found!");
-        return null;
+            throw new PlayerNotFoundException(id);
     }
 
     @GetMapping(path="/all")
@@ -49,22 +48,29 @@ public class TournamentController {
     }
 
     @GetMapping(path="/delete/{id}")
-    public @ResponseBody String deleteTournamentById (@PathVariable("id") int id) {
-        tournamentService.delete(id);
-        return "Tournament with id " + id + " deleted!";
+    public @ResponseBody String deleteTournamentById (@PathVariable("id") int id) throws TournamentNotFoundException {
+        if (tournamentRepository.findById(id).isPresent()) {
+            tournamentService.delete(id);
+        } else {
+            throw new TournamentNotFoundException(id);
+        }
+        return "Player with id " + id + " succesfully deleted!";
     }
 
     @PutMapping(path="/addPlayer")
-    public @ResponseBody void addPlayerToTournament(Integer tournamentID, Integer playerID) {
-        if (playerRepository.findById(playerID).isPresent() &&
-            tournamentRepository.findById(tournamentID).isPresent()) {
+    public @ResponseBody void addPlayerToTournament(Integer tournamentID, Integer playerID) throws PlayerNotFoundException, TournamentNotFoundException {
+        if (!playerRepository.findById(playerID).isPresent()) {
+            throw new PlayerNotFoundException(playerID);
+        }
+        else if (!tournamentRepository.findById(tournamentID).isPresent()) {
+            throw new TournamentNotFoundException(tournamentID);
+        }
+        else {
             Player p = playerRepository.findById(playerID).get();
             Tournament t = tournamentRepository.findById(tournamentID).get();
             t.getPlayersInTournament().add(p);
             tournamentRepository.save(t);
             System.out.println("Player list updated!");
-        } else {
-            System.out.println("Wrong tournament or player ID!");
         }
     }
 }

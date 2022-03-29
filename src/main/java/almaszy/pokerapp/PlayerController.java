@@ -1,5 +1,6 @@
 package almaszy.pokerapp;
 
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -30,29 +31,39 @@ public class PlayerController {
     }
 
     @GetMapping (path="/find/{id}")
-    public @ResponseBody Player getPlayerById (@PathVariable("id") int id) {
+    public @ResponseBody Player getPlayerById (@PathVariable("id") int id) throws PlayerNotFoundException {
         if (playerRepository.findById(id).isPresent()) {
             System.out.println(playerRepository.findById(id).get());
             return playerRepository.findById(id).get();
         }
-        else
-            System.out.println("Player not found!");
-            return null;
+        else {
+            throw new PlayerNotFoundException(id);
+        }
     }
 
     @PostMapping (path="/updatetel/{id}")
-    public String updatePlayerTel (@RequestBody @PathVariable("id") int id, String telnumber) {
-        Player p = playerRepository.getById(id);
-        p.setTelnumber(telnumber);
-        playerRepository.save(p);
+    public String updatePlayerTel (@RequestBody @PathVariable("id") int id, String telnumber) throws PlayerNotFoundException {
+        if (playerRepository.findById(id).isPresent()) {
+            Player p = playerRepository.getById(id);
+            p.setTelnumber(telnumber);
+            playerRepository.save(p);
+        } else {
+            throw new PlayerNotFoundException(id);
+        }
      return "New phone number saved!";
     }
 
     @PostMapping (path="/updatemail/{id}")
-    public String updatePlayerEmail (@RequestBody @PathVariable("id") int id, String email) {
-        Player p = playerRepository.getById(id);
-        p.setEmail(email);
-        playerRepository.save(p);
+    public String updatePlayerEmail (
+            @RequestBody
+            @PathVariable("id") int id, String email) throws PlayerNotFoundException {
+        if (playerRepository.findById(id).isPresent()) {
+            Player p = playerRepository.getById(id);
+            p.setEmail(email);
+            playerRepository.save(p);
+        } else {
+            throw new PlayerNotFoundException(id);
+        }
         return "New email address saved!";
     }
 
@@ -64,11 +75,12 @@ public class PlayerController {
 
 
     @GetMapping(path="/delete/{id}")
-    public @ResponseBody String deletePlayerById (@PathVariable("id") int id) {
+    public @ResponseBody String deletePlayerById (@PathVariable("id") int id) throws PlayerNotFoundException {
         if (playerRepository.findById(id).isPresent()) {
             playerService.delete(id);
-            return "Player with id " + id + " deleted!";
+        } else {
+            throw new PlayerNotFoundException(id);
         }
-        else return "No player with id " + id + " in database!";
+        return "Player with id " + id + " succesfully deleted!";
     }
 }
