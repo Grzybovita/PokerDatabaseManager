@@ -1,4 +1,4 @@
-package almaszy.pokerapp;
+package almaszy.pokerapp.Model;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;

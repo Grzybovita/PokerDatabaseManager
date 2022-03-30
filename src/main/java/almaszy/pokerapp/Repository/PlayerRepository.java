@@ -1,5 +1,6 @@
-package almaszy.pokerapp;
+package almaszy.pokerapp.Repository;
 
+import almaszy.pokerapp.Model.Player;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

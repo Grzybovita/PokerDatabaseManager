@@ -1,5 +1,12 @@
-package almaszy.pokerapp;
+package almaszy.pokerapp.Controller;
 
+import almaszy.pokerapp.Exception.PlayerNotFoundException;
+import almaszy.pokerapp.Exception.TournamentNotFoundException;
+import almaszy.pokerapp.Model.Player;
+import almaszy.pokerapp.Model.Tournament;
+import almaszy.pokerapp.Repository.PlayerRepository;
+import almaszy.pokerapp.Repository.TournamentRepository;
+import almaszy.pokerapp.Service.TournamentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
