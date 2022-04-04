@@ -1,13 +1,15 @@
-package almaszy.pokerapp.Controller;
-import almaszy.pokerapp.Model.Player;
-import almaszy.pokerapp.Exception.PlayerNotFoundException;
-import almaszy.pokerapp.Repository.PlayerRepository;
-import almaszy.pokerapp.Service.PlayerService;
+package almaszy.pokerapp.controller;
+import almaszy.pokerapp.model.Player;
+import almaszy.pokerapp.exception.PlayerNotFoundException;
+import almaszy.pokerapp.repository.PlayerRepository;
+import almaszy.pokerapp.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 @RestController
@@ -21,52 +23,57 @@ public class PlayerController {
     @Autowired
     PlayerService playerService;
 
+    Logger logger = Logger.getLogger(PlayerController.class.getName());
+
     @PostMapping (path="/add")
-    public String addNewPlayer (
+    public void addNewPlayer (
             @Valid
             @RequestBody Player player, BindingResult result) {
         if (result.hasErrors()) {
-            return "error";
+            logger.log(Level.WARNING, "Error occured during adding new player!");
+        } else {
+            playerRepository.save(player);
+            logger.log(Level.ALL, "New player has been added succesfully!");
         }
-        playerRepository.save(player);
-        return "Saved!";
     }
 
     @GetMapping (path="/find/{id}")
     public @ResponseBody Player getPlayerById (@PathVariable("id") int id) throws PlayerNotFoundException {
         if (playerRepository.findById(id).isPresent()) {
-            System.out.println(playerRepository.findById(id).get());
             return playerRepository.findById(id).get();
         }
         else {
+            logger.log(Level.WARNING, "Player not found");
             throw new PlayerNotFoundException(id);
         }
     }
 
     @PostMapping (path="/updatetel/{id}")
-    public String updatePlayerTel (@RequestBody @PathVariable("id") int id, String telnumber) throws PlayerNotFoundException {
+    public void updatePlayerTel (@RequestBody @PathVariable("id") int id, String telnumber) throws PlayerNotFoundException {
         if (playerRepository.findById(id).isPresent()) {
             Player p = playerRepository.getById(id);
             p.setTelnumber(telnumber);
             playerRepository.save(p);
+            logger.log(Level.ALL, "Player {} tel. number updated!", id);
         } else {
+            logger.log(Level.WARNING, "Player {} not found!", id);
             throw new PlayerNotFoundException(id);
         }
-     return "New phone number saved!";
     }
 
     @PostMapping (path="/updatemail/{id}")
-    public String updatePlayerEmail (
+    public void updatePlayerEmail (
             @RequestBody
             @PathVariable("id") int id, String email) throws PlayerNotFoundException {
         if (playerRepository.findById(id).isPresent()) {
             Player p = playerRepository.getById(id);
             p.setEmail(email);
             playerRepository.save(p);
+            logger.log(Level.ALL, "player {} email has been updated!", id);
         } else {
+            logger.log(Level.WARNING, "player {} not found!", id);
             throw new PlayerNotFoundException(id);
         }
-        return "New email address saved!";
     }
 
     @GetMapping(path="/all")
@@ -75,14 +82,14 @@ public class PlayerController {
         return playerRepository.findAll();
     }
 
-
     @GetMapping(path="/delete/{id}")
-    public @ResponseBody String deletePlayerById (@PathVariable("id") int id) throws PlayerNotFoundException {
+    public @ResponseBody void deletePlayerById (@PathVariable("id") int id) throws PlayerNotFoundException {
         if (playerRepository.findById(id).isPresent()) {
             playerService.delete(id);
+            logger.log(Level.ALL, "Player {} deleted!", id);
         } else {
+            logger.log(Level.WARNING, "Player {} not found!", id);
             throw new PlayerNotFoundException(id);
         }
-        return "Player with id " + id + " succesfully deleted!";
     }
 }
