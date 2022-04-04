@@ -84,8 +84,11 @@ public class PlayerControllerIntegrationTest {
         restTemplate.put(getRootUrl() + "/player/updatemail/" + id, player);
     }
 
+    //TODO
+    //check for all player records in player_tournament table (many-to-many), player_id is PK
+    //test below only checks if endpoint is ok
     @Test
-    public void testDeleteEmployee() {
+    public void testDeletePlayer() {
         int id = 5;
         Player player = restTemplate.getForObject(getRootUrl() + "/player/delete/" + id, Player.class);
         assertNotNull(player);
