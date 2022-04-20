@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PokerappApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class EmployeeControllerIntegrationTest {
+public class EmployeeControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;

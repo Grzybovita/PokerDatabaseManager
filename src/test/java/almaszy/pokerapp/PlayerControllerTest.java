@@ -17,13 +17,10 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PokerappApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PlayerControllerIntegrationTest {
+public class PlayerControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
-
-    @Autowired
-    private PlayerRepository repository;
 
     @LocalServerPort
     private int port;
@@ -34,7 +31,6 @@ public class PlayerControllerIntegrationTest {
 
     @Test
     public void contextLoads() {
-
     }
 
     @Test
@@ -60,28 +56,31 @@ public class PlayerControllerIntegrationTest {
     }
 
     @Test
-    public void TestFindPlayerById() {
+    public void testFindPlayerById() {
         int id = 5;
+        //possible change to return type ResponseEntity<Player>
         Player player = restTemplate.getForObject(getRootUrl() + "/player/find/" + id, Player.class);
         assertNotNull(player.getName());
     }
 
     @Test
-    public void updatePlayerTel() {
+    public void testUpdatePlayerTel() {
         int id = 5;
         Player player = restTemplate.getForObject(getRootUrl() + "/player/find/" + id, Player.class);
         assertNotNull(player.getName());
         player.setTelnumber("333444555");
         restTemplate.put(getRootUrl() + "/player/updatetel/" + id, player);
+        assertEquals("333444555", player.getTelnumber());
     }
 
     @Test
-    public void updatePlayerEmail() {
+    public void testUpdatePlayerEmail() {
         int id = 5;
         Player player = restTemplate.getForObject(getRootUrl() + "/player/find/" + id, Player.class);
         assertNotNull(player.getName());
-        player.setTelnumber("adminxx@admin.com");
+        player.setEmail("adminxx@admin.com");
         restTemplate.put(getRootUrl() + "/player/updatemail/" + id, player);
+        assertEquals("adminxx@admin.com", player.getEmail());
     }
 
     //TODO
