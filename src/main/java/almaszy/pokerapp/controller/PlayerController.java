@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 
 @RestController
-@Validated
 @RequestMapping(path="/player")
 public class PlayerController {
 

@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-@Validated
 @RequestMapping(path="/tournament")
 public class TournamentController {
 
@@ -38,13 +37,14 @@ public class TournamentController {
         if (result.hasErrors()) {
             logger.log(Level.WARNING, "Errors occured during adding a new tournament!");
         } else {
-            logger.log(Level.FINEST, "Tournament {} has been added!", tournament.getId());
             tournamentRepository.save(tournament);
+            logger.log(Level.FINEST, "Tournament {} has been added!", tournament.getId());
+
         }
     }
 
     @GetMapping (path="/find/{id}")
-    public @ResponseBody Tournament getTournamentById (@PathVariable("id") int id) throws PlayerNotFoundException {
+    public Tournament getTournamentById (@PathVariable("id") int id) throws PlayerNotFoundException {
         if (tournamentRepository.findById(id).isPresent()) {
             return tournamentRepository.findById(id).get();
         }
@@ -55,13 +55,13 @@ public class TournamentController {
     }
 
     @GetMapping(path="/all")
-    public @ResponseBody Iterable<Tournament> getAllTournaments() {
+    public Iterable<Tournament> getAllTournaments() {
         // This returns a JSON or XML with the users
         return tournamentRepository.findAll();
     }
 
     @GetMapping(path="/delete/{id}")
-    public @ResponseBody void deleteTournamentById (@PathVariable("id") int id) throws TournamentNotFoundException {
+    public void deleteTournamentById (@PathVariable("id") int id) throws TournamentNotFoundException {
         if (tournamentRepository.findById(id).isPresent()) {
             tournamentService.delete(id);
             logger.log(Level.ALL, "Tournament {} deleted!", id);
@@ -72,7 +72,7 @@ public class TournamentController {
     }
 
     @PutMapping(path="/addPlayer")
-    public @ResponseBody void addPlayerToTournament(Integer tournamentID, Integer playerID) throws PlayerNotFoundException, TournamentNotFoundException {
+    public void addPlayerToTournament(Integer tournamentID, Integer playerID) throws PlayerNotFoundException, TournamentNotFoundException {
         if (!playerRepository.findById(playerID).isPresent()) {
             logger.log(Level.WARNING, "Player {} not found!", playerID);
             throw new PlayerNotFoundException(playerID);

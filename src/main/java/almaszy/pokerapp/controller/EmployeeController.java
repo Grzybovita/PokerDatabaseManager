@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-@Validated
 @RequestMapping(path="/employee")
 public class EmployeeController {
 
@@ -40,8 +39,7 @@ public class EmployeeController {
     }
 
     @GetMapping(path="/find/{id}")
-    public @ResponseBody
-    Employee getEmployeeById (@PathVariable("id") int id) throws EmployeeNotFoundException {
+    public Employee getEmployeeById (@PathVariable("id") int id) throws EmployeeNotFoundException {
         if (employeeRepository.findById(id).isPresent()) {
             return employeeRepository.findById(id).get();
         }
@@ -80,13 +78,13 @@ public class EmployeeController {
     }
 
     @GetMapping(path="/all")
-    public @ResponseBody Iterable<Employee> getAllEmployees() {
+    public Iterable<Employee> getAllEmployees() {
         // This returns a JSON or XML with the users
         return employeeRepository.findAll();
     }
 
     @GetMapping(path="/delete/{id}")
-    public @ResponseBody void deleteEmployeeById (@PathVariable("id") int id) throws EmployeeNotFoundException {
+    public void deleteEmployeeById (@PathVariable("id") int id) throws EmployeeNotFoundException {
         if (employeeRepository.findById(id).isPresent()) {
             employeeService.delete(id);
             logger.log(Level.ALL, "Employee {} deleted!", id);
