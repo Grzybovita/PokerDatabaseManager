@@ -7,7 +7,6 @@ import almaszy.pokerapp.repository.EmployeeRepository;
 import almaszy.pokerapp.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -39,7 +38,7 @@ public class EmployeeController {
     }
 
     @GetMapping(path="/find/{id}")
-    public Employee getEmployeeById (@PathVariable("id") int id) throws EmployeeNotFoundException {
+    public @ResponseBody Employee getEmployeeById (@PathVariable("id") int id) throws EmployeeNotFoundException {
         if (employeeRepository.findById(id).isPresent()) {
             return employeeRepository.findById(id).get();
         }
@@ -78,13 +77,13 @@ public class EmployeeController {
     }
 
     @GetMapping(path="/all")
-    public Iterable<Employee> getAllEmployees() {
+    public @ResponseBody Iterable<Employee> getAllEmployees() {
         // This returns a JSON or XML with the users
         return employeeRepository.findAll();
     }
 
     @GetMapping(path="/delete/{id}")
-    public void deleteEmployeeById (@PathVariable("id") int id) throws EmployeeNotFoundException {
+    public @ResponseBody void deleteEmployeeById (@PathVariable("id") int id) throws EmployeeNotFoundException {
         if (employeeRepository.findById(id).isPresent()) {
             employeeService.delete(id);
             logger.log(Level.ALL, "Employee {} deleted!", id);

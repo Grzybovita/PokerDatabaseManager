@@ -5,7 +5,6 @@ import almaszy.pokerapp.repository.PlayerRepository;
 import almaszy.pokerapp.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.logging.Level;
@@ -76,13 +75,13 @@ public class PlayerController {
     }
 
     @GetMapping(path="/all")
-    public Iterable<Player> getAllPlayers() {
+    public @ResponseBody Iterable<Player> getAllPlayers() {
         // This returns a JSON or XML with the users
         return playerRepository.findAll();
     }
 
     @GetMapping(path="/delete/{id}")
-    public void deletePlayerById (@PathVariable("id") int id) throws PlayerNotFoundException {
+    public @ResponseBody void deletePlayerById (@PathVariable("id") int id) throws PlayerNotFoundException {
         if (playerRepository.findById(id).isPresent()) {
             playerService.delete(id);
             logger.log(Level.ALL, "Player {} deleted!", id);

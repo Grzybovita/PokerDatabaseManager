@@ -9,13 +9,13 @@ import almaszy.pokerapp.repository.TournamentRepository;
 import almaszy.pokerapp.service.TournamentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
+
 @RequestMapping(path="/tournament")
 public class TournamentController {
 
@@ -44,7 +44,7 @@ public class TournamentController {
     }
 
     @GetMapping (path="/find/{id}")
-    public Tournament getTournamentById (@PathVariable("id") int id) throws PlayerNotFoundException {
+    public @ResponseBody Tournament getTournamentById (@PathVariable("id") int id) throws PlayerNotFoundException {
         if (tournamentRepository.findById(id).isPresent()) {
             return tournamentRepository.findById(id).get();
         }
@@ -55,13 +55,13 @@ public class TournamentController {
     }
 
     @GetMapping(path="/all")
-    public Iterable<Tournament> getAllTournaments() {
+    public @ResponseBody Iterable<Tournament> getAllTournaments() {
         // This returns a JSON or XML with the users
         return tournamentRepository.findAll();
     }
 
     @GetMapping(path="/delete/{id}")
-    public void deleteTournamentById (@PathVariable("id") int id) throws TournamentNotFoundException {
+    public @ResponseBody void deleteTournamentById (@PathVariable("id") int id) throws TournamentNotFoundException {
         if (tournamentRepository.findById(id).isPresent()) {
             tournamentService.delete(id);
             logger.log(Level.ALL, "Tournament {} deleted!", id);
@@ -72,7 +72,7 @@ public class TournamentController {
     }
 
     @PutMapping(path="/addPlayer")
-    public void addPlayerToTournament(Integer tournamentID, Integer playerID) throws PlayerNotFoundException, TournamentNotFoundException {
+    public @ResponseBody void addPlayerToTournament(Integer tournamentID, Integer playerID) throws PlayerNotFoundException, TournamentNotFoundException {
         if (!playerRepository.findById(playerID).isPresent()) {
             logger.log(Level.WARNING, "Player {} not found!", playerID);
             throw new PlayerNotFoundException(playerID);
