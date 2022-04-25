@@ -1,6 +1,5 @@
 package almaszy.pokerapp;
 
-import almaszy.pokerapp.model.Player;
 import almaszy.pokerapp.model.Tournament;
 import org.junit.Test;
 import org.junit.runner.RunWith;

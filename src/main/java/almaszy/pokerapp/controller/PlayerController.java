@@ -77,13 +77,13 @@ public class PlayerController {
     }
 
     @GetMapping(path="/all")
-    public @ResponseBody Iterable<Player> getAllPlayers() {
+    public Iterable<Player> getAllPlayers() {
         // This returns a JSON or XML with the users
         return playerRepository.findAll();
     }
 
     @GetMapping(path="/delete/{id}")
-    public @ResponseBody void deletePlayerById (@PathVariable("id") int id) throws PlayerNotFoundException {
+    public void deletePlayerById (@PathVariable("id") int id) throws PlayerNotFoundException {
         if (playerRepository.findById(id).isPresent()) {
             playerService.delete(id);
             logger.log(Level.ALL, "Player {} deleted!", id);
